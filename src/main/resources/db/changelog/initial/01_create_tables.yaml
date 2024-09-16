@@ -1,0 +1,98 @@
+databaseChangeLog:
+  - changeSet:
+      id: 01-create-tables
+      author: angryelizar
+      changes:
+        - createTable:
+            tableName: authorities
+            columns:
+              - column:
+                  name: id
+                  type: long
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: authority
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: password
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: enabled
+                  type: boolean
+              - column:
+                  name: authority_id
+                  type: long
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_authority_id_users
+                    references: authorities(id)
+        - createTable:
+            tableName: task_statuses
+            columns:
+              - column:
+                  name: id
+                  type: long
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(150)
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: tasks
+            columns:
+              - column:
+                  name: id
+                  type: long
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: title
+                  type: varchar(150)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: varchar(255)
+              - column:
+                  name: author
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    foreignKeyName: users_task_fk
+                    references: users(email)
+              - column:
+                  name: status_id
+                  type: long
+                  constraints:
+                    nullable: false
+                    foreignKeyName: statuses_task_fk
+                    references: task_statuses(id)
