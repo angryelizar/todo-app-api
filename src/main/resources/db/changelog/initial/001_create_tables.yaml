@@ -96,3 +96,13 @@ databaseChangeLog:
                     nullable: false
                     foreignKeyName: statuses_task_fk
                     references: task_statuses(id)
+              - column:
+                  name: creation_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: update_date
+                  type: datetime
+                  constraints:
+                    nullable: false

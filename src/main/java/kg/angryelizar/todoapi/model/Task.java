@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Builder
 @Table(name = "TASKS")
@@ -22,5 +24,7 @@ public class Task {
     @JoinColumn(name = "status_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private TaskStatus status;
+    private LocalDateTime creationDate;
+    private LocalDateTime updateDate;
 
 }
