@@ -10,6 +10,7 @@ import kg.angryelizar.todoapi.repository.TaskRepository;
 import kg.angryelizar.todoapi.repository.TaskStatusRepository;
 import kg.angryelizar.todoapi.repository.UserRepository;
 import kg.angryelizar.todoapi.service.TaskService;
+import kg.angryelizar.todoapi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,25 +18,21 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class TaskServiceImpl implements TaskService {
 
-    private final UserRepository userRepository;
     private final TaskRepository taskRepository;
+    private final UserService userService;
     private final TaskStatusRepository taskStatusRepository;
 
     @Override
     public ResponseEntity<TaskInfoDto> create(TaskCreateDto task, Authentication authentication) {
-        Optional<User> user = userRepository.getByEmail(authentication.getName());
-        if (user.isEmpty()) {
-            log.error("User with email {} not found", authentication.getName());
-            throw new UserException("User not found!");
-        }
-        User author = user.get();
+        User author = userService.getUserFromAuthentication(authentication);
         Task savedTask = taskRepository.save(
                 Task.builder()
                         .author(author)
@@ -46,7 +43,17 @@ public class TaskServiceImpl implements TaskService {
                         .status(taskStatusRepository.findByStatus(TaskStatus.CREATED.getStatus()))
                         .build());
         log.info("Created task with ID {} by user {}", savedTask.getId(), savedTask.getAuthor().getEmail());
+        log.info("New task {}", savedTask);
         return ResponseEntity.ok(makeTaskInfoDto(savedTask));
+    }
+
+    @Override
+    public ResponseEntity<List<TaskInfoDto>> getAllActiveTasksForUser(Authentication authentication) {
+        log.info("Get all active tasks for user {}", authentication.getName());
+        User author = userService.getUserFromAuthentication(authentication);
+        List<Task> tasks = taskRepository.findActiveTaskByAuthor(author.getEmail(), taskStatusRepository.findByStatus(TaskStatus.DELETED.getStatus()).getId());
+        log.info("Found {} active tasks for user {}", tasks.size(), author.getEmail());
+        return ResponseEntity.ok(tasks.stream().map(this::makeTaskInfoDto).collect(Collectors.toList()));
     }
 
     private TaskInfoDto makeTaskInfoDto(Task task) {

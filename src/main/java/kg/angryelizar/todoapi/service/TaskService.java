@@ -7,7 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public interface TaskService {
     ResponseEntity<TaskInfoDto> create(TaskCreateDto task, Authentication authentication);
+
+    ResponseEntity<List<TaskInfoDto>> getAllActiveTasksForUser(Authentication authentication);
 }

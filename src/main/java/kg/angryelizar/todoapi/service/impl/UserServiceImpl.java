@@ -9,8 +9,11 @@ import kg.angryelizar.todoapi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 
 @Service
@@ -42,5 +45,15 @@ public class UserServiceImpl implements UserService {
                 .build());
         log.info("User successfully registered with email: {}", userDto.getEmail());
         return HttpStatus.CREATED;
+    }
+
+    @Override
+    public User getUserFromAuthentication(Authentication authentication) {
+        Optional<User> user = userRepository.getByEmail(authentication.getName());
+        if (user.isEmpty()) {
+            log.error("User with email {} not found", authentication.getName());
+            throw new UserException("User not found!");
+        }
+        return user.get();
     }
 }

@@ -24,10 +24,10 @@ public class TaskController {
     @GetMapping()
     @Operation(
             summary = "Get all tasks",
-            description = "Getting a list of all active (non-deleted) tasks"
+            description = "Getting a list of all yours active (non-deleted) tasks"
     )
-    public ResponseEntity<List<Task>> getAllTasks() {
-        return null;
+    public ResponseEntity<List<TaskInfoDto>> getAllTasks(Authentication authentication) {
+        return taskService.getAllActiveTasksForUser(authentication);
     }
 
     @GetMapping("/{id}")

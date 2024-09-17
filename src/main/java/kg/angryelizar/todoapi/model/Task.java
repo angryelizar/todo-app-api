@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,9 +21,11 @@ public class Task {
     private String description;
     @JoinColumn(name = "author")
     @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
     private User author;
     @JoinColumn(name = "status_id")
     @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
     private TaskStatus status;
     private LocalDateTime creationDate;
     private LocalDateTime updateDate;
