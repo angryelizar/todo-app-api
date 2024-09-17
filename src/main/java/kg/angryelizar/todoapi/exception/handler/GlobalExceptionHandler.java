@@ -1,16 +1,29 @@
 package kg.angryelizar.todoapi.exception.handler;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.ErrorResponse;
+import kg.angryelizar.todoapi.dto.ErrorResponseBody;
+import kg.angryelizar.todoapi.exception.UserException;
+import kg.angryelizar.todoapi.service.ErrorService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.NoSuchElementException;
 
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
-    @ExceptionHandler
-    private ErrorResponse noSuchElementHandler(NoSuchElementException exception) {
-        return ErrorResponse.builder(exception, HttpStatus.NO_CONTENT, exception.getMessage()).build();
+    private final ErrorService errorService;
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseBody
+    private ErrorResponseBody methodArgumentNotValidException(MethodArgumentNotValidException exception) {
+        return errorService.makeResponse(exception.getBindingResult());
+    }
+
+    @ExceptionHandler(UserException.class)
+    @ResponseBody
+    private ErrorResponseBody userException(UserException exception){
+        return errorService.makeResponse(exception);
     }
 }

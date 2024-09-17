@@ -1,6 +1,5 @@
 package kg.angryelizar.todoapi.service;
 
-import jakarta.servlet.http.HttpServletRequest;
 import kg.angryelizar.todoapi.dto.ErrorResponseBody;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
