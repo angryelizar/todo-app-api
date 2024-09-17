@@ -23,15 +23,15 @@ public class User implements UserDetails {
     private String password;
     private Boolean enabled;
     @JoinColumn(name = "authority_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Authority authority;
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
     private List<Task> tasks;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(authority.toString()));
+        return List.of(new SimpleGrantedAuthority(authority.getAuthority()));
     }
 
     @Override

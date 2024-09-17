@@ -14,8 +14,7 @@ VALUES ('USER');
 -- Users
 -- Password - Qwerty123!
 INSERT INTO USERS(EMAIL, USERNAME, PASSWORD, ENABLED, AUTHORITY_ID)
-VALUES ('conovalov.elizar@gmail.com', 'angryelizar', '$2a$12$kSZCNiU7qdqrdRq13qWSwO8T56Fjc6.e1NNlJ3LEByoDukyYFcpMO
-', true, (select id from AUTHORITIES where AUTHORITY = 'USER'));
+VALUES ('conovalov.elizar@gmail.com', 'angryelizar', '$2a$12$3ibZtYdAECCociSEafHe1eDGQGqGF2LsmREkHzALCv6IBFoaRaYbG', true, (select id from AUTHORITIES where AUTHORITY = 'USER'));
 
 -- Tasks
 INSERT INTO TASKS(TITLE, DESCRIPTION, AUTHOR, STATUS_ID)
