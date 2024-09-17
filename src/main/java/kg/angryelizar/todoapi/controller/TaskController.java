@@ -2,10 +2,14 @@ package kg.angryelizar.todoapi.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import kg.angryelizar.todoapi.dto.TaskCreateDto;
+import kg.angryelizar.todoapi.dto.TaskInfoDto;
 import kg.angryelizar.todoapi.model.Task;
 import kg.angryelizar.todoapi.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Task contoller", description = "Endpoints for creating and editing tasks")
 public class TaskController {
+    private final TaskService taskService;
 
     @GetMapping()
     @Operation(
@@ -46,10 +51,10 @@ public class TaskController {
     @PostMapping
     @Operation(
             summary = "Create a task",
-            description = "Here you can create a new task with your description, title and task status"
+            description = "Here you can create a new task with your description and title"
     )
-    public ResponseEntity<Task> createTask(@RequestBody Task task) {
-        return null;
+    public ResponseEntity<TaskInfoDto> createTask(@RequestBody @Valid TaskCreateDto task, Authentication authentication) {
+        return taskService.create(task, authentication);
     }
 
     @PutMapping("/{id}")

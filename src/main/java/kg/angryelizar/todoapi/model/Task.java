@@ -1,9 +1,7 @@
 package kg.angryelizar.todoapi.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -12,6 +10,8 @@ import java.time.LocalDateTime;
 @Table(name = "TASKS")
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,9 +1,7 @@
 package kg.angryelizar.todoapi.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -12,6 +10,8 @@ import java.util.List;
 @Table(name = "TASK_STATUSES")
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class TaskStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
