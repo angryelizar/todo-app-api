@@ -4,6 +4,9 @@ spring:
     url: jdbc:h2:./db/app;AUTO_SERVER=TRUE
     username: root
     password: qwerty
+  jpa:
+    hibernate:
+      ddl-auto: validate
   application:
     name: ToDoAPI
   liquibase:
