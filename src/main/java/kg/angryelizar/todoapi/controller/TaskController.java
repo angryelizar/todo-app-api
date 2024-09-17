@@ -35,8 +35,8 @@ public class TaskController {
             summary = "Retrieving a task by ID",
             description = "Obtaining individual information on a task by ID"
     )
-    public ResponseEntity<Task> getTaskById(@PathVariable Long id) {
-        return null;
+    public ResponseEntity<TaskInfoDto> getTaskById(@PathVariable Long id, Authentication authentication) {
+        return taskService.getTaskById(id, authentication);
     }
 
     @GetMapping("/statuses")

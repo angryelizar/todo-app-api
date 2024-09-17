@@ -3,12 +3,11 @@ package kg.angryelizar.todoapi.service.impl;
 import kg.angryelizar.todoapi.dto.TaskCreateDto;
 import kg.angryelizar.todoapi.dto.TaskInfoDto;
 import kg.angryelizar.todoapi.enums.TaskStatus;
-import kg.angryelizar.todoapi.exception.UserException;
+import kg.angryelizar.todoapi.exception.TaskException;
 import kg.angryelizar.todoapi.model.Task;
 import kg.angryelizar.todoapi.model.User;
 import kg.angryelizar.todoapi.repository.TaskRepository;
 import kg.angryelizar.todoapi.repository.TaskStatusRepository;
-import kg.angryelizar.todoapi.repository.UserRepository;
 import kg.angryelizar.todoapi.service.TaskService;
 import kg.angryelizar.todoapi.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,6 +54,28 @@ public class TaskServiceImpl implements TaskService {
         List<Task> tasks = taskRepository.findActiveTaskByAuthor(author.getEmail(), taskStatusRepository.findByStatus(TaskStatus.DELETED.getStatus()).getId());
         log.info("Found {} active tasks for user {}", tasks.size(), author.getEmail());
         return ResponseEntity.ok(tasks.stream().map(this::makeTaskInfoDto).collect(Collectors.toList()));
+    }
+
+    @Override
+    public ResponseEntity<TaskInfoDto> getTaskById(Long id, Authentication authentication) {
+        User author = userService.getUserFromAuthentication(authentication);
+        log.info("Get task with ID {} by user {}", id, author.getEmail());
+        Optional<Task> task = taskRepository.findById(id);
+        if (task.isEmpty()) {
+            log.info("Task with ID {} not found", id);
+            throw new TaskException("There is no task with ID " + id);
+        }
+        if (Boolean.FALSE.equals(isAuthor(author, task.get()))) {
+            log.error("Task with ID {} is not author", id);
+            throw new TaskException("You are not author of this task");
+        }
+        log.info("Task with ID {} found", id);
+        log.info("Task with ID {} found", task.get());
+        return ResponseEntity.ok(makeTaskInfoDto(task.get()));
+    }
+
+    private Boolean isAuthor(User user, Task task) {
+        return task.getAuthor().getEmail().equals(user.getEmail());
     }
 
     private TaskInfoDto makeTaskInfoDto(Task task) {

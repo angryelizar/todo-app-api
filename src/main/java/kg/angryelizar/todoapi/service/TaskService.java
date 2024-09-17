@@ -14,4 +14,6 @@ public interface TaskService {
     ResponseEntity<TaskInfoDto> create(TaskCreateDto task, Authentication authentication);
 
     ResponseEntity<List<TaskInfoDto>> getAllActiveTasksForUser(Authentication authentication);
+
+    ResponseEntity<TaskInfoDto> getTaskById(Long id, Authentication authentication);
 }
