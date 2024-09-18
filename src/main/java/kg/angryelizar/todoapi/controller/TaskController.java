@@ -5,9 +5,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import kg.angryelizar.todoapi.dto.TaskCreateDto;
 import kg.angryelizar.todoapi.dto.TaskInfoDto;
+import kg.angryelizar.todoapi.dto.TaskStatusDto;
 import kg.angryelizar.todoapi.model.Task;
 import kg.angryelizar.todoapi.service.TaskService;
-import kg.angryelizar.todoapi.service.UserService;
+import kg.angryelizar.todoapi.service.TaskStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import java.util.List;
 @Tag(name = "Task contoller", description = "Endpoints for creating and editing tasks")
 public class TaskController {
     private final TaskService taskService;
+    private final TaskStatusService taskStatusService;
 
     @GetMapping()
     @Operation(
@@ -46,8 +48,8 @@ public class TaskController {
             summary = "Getting a list of task statuses",
             description = "Useful when creating a task or changing its status"
     )
-    public ResponseEntity<?> getTaskStatuses() {
-        return null;
+    public ResponseEntity<List<TaskStatusDto>> getTaskStatuses() {
+        return taskStatusService.getAll();
     }
 
     @PostMapping
