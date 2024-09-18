@@ -12,6 +12,7 @@ import kg.angryelizar.todoapi.service.TaskService;
 import kg.angryelizar.todoapi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -60,6 +61,13 @@ public class TaskServiceImpl implements TaskService {
     public ResponseEntity<TaskInfoDto> getTaskById(Long id, Authentication authentication) {
         User author = userService.getUserFromAuthentication(authentication);
         log.info("Get task with ID {} by user {}", id, author.getEmail());
+        Optional<Task> task = getAndValidateTask(id, author);
+        log.info("Task with ID {} found", id);
+        log.info("Task with ID {} found", task.get());
+        return ResponseEntity.ok(makeTaskInfoDto(task.get()));
+    }
+
+    private Optional<Task> getAndValidateTask(Long id, User author) {
         Optional<Task> task = taskRepository.findById(id);
         if (task.isEmpty()) {
             log.info("Task with ID {} not found", id);
@@ -69,9 +77,22 @@ public class TaskServiceImpl implements TaskService {
             log.error("Task with ID {} is not author", id);
             throw new TaskException("You are not author of this task");
         }
-        log.info("Task with ID {} found", id);
-        log.info("Task with ID {} found", task.get());
-        return ResponseEntity.ok(makeTaskInfoDto(task.get()));
+        return task;
+    }
+
+    @Override
+    public HttpStatus deleteTaskById(Long id, Authentication authentication) {
+        User author = userService.getUserFromAuthentication(authentication);
+        Task task = getAndValidateTask(id, author).get();
+        if (task.getStatus().getStatus().equals(TaskStatus.DELETED.getStatus())) {
+            log.info("Task with ID {} is already deleted", id);
+            throw new TaskException("Task with ID " + id + " is already deleted");
+        }
+        log.info("Deleting (changed status) task with ID {} by user {}", id, author.getEmail());
+        task.setStatus(taskStatusRepository.findByStatus(TaskStatus.DELETED.getStatus()));
+        task.setUpdateDate(LocalDateTime.now());
+        taskRepository.save(task);
+        return HttpStatus.ACCEPTED;
     }
 
     private Boolean isAuthor(User user, Task task) {

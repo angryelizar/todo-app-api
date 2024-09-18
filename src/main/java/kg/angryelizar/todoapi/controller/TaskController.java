@@ -7,7 +7,9 @@ import kg.angryelizar.todoapi.dto.TaskCreateDto;
 import kg.angryelizar.todoapi.dto.TaskInfoDto;
 import kg.angryelizar.todoapi.model.Task;
 import kg.angryelizar.todoapi.service.TaskService;
+import kg.angryelizar.todoapi.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -66,12 +68,12 @@ public class TaskController {
         return null;
     }
 
-    @DeleteMapping("/id")
+    @DeleteMapping("/{id}")
     @Operation(
             summary = "Delete a task",
             description = "Here you can delete a task"
     )
-    public ResponseEntity<?> deleteTask(@PathVariable Long id) {
-        return null;
+    public HttpStatus deleteTask(@PathVariable Long id, Authentication authentication) {
+        return taskService.deleteTaskById(id, authentication);
     }
 }
