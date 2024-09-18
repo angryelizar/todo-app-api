@@ -2,6 +2,8 @@ package kg.angryelizar.todoapi.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -13,7 +15,7 @@ import java.time.LocalDateTime;
 @ToString
 @Builder
 public class TaskInfoDto {
-    @NotBlank(message = "ID of task cannot be empty!")
+    @NotNull(message = "ID of task cannot be empty!")
     @Schema(description = "ID of task", example = "1")
     private Long id;
     @NotBlank

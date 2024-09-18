@@ -24,6 +24,8 @@ public class TaskStatusServiceImpl implements TaskStatusService {
         return ResponseEntity.ok(taskStatusRepository.findAll().stream().map(this::toDto).collect(Collectors.toList()));
     }
 
+
+
     private TaskStatusDto toDto(TaskStatus taskStatus) {
         return TaskStatusDto.builder()
                 .status(taskStatus.getStatus())

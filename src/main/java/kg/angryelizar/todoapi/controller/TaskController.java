@@ -61,13 +61,13 @@ public class TaskController {
         return taskService.create(task, authentication);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping()
     @Operation(
             summary = "Edit a task",
-            description = "Here you can edit a task description, title and task status"
+            description = "Here you can edit a task description, title and task status. The update date and creation date are not taken into account when updating"
     )
-    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task task) {
-        return null;
+    public ResponseEntity<TaskInfoDto> updateTask(@RequestBody @Valid TaskInfoDto task, Authentication authentication) {
+        return taskService.update(task, authentication);
     }
 
     @DeleteMapping("/{id}")

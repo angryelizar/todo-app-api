@@ -19,4 +19,6 @@ public interface TaskService {
     ResponseEntity<TaskInfoDto> getTaskById(Long id, Authentication authentication);
 
     HttpStatus deleteTaskById(Long id, Authentication authentication);
+
+    ResponseEntity<TaskInfoDto> update(TaskInfoDto task, Authentication authentication);
 }
