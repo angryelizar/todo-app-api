@@ -1,4 +1,15 @@
 spring:
+  mail:
+    host: smtp.yandex.ru
+    username: conovalov.elizar@yandex.ru
+    password: obmimyygyoqxtifs
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:./db/app;AUTO_SERVER=TRUE

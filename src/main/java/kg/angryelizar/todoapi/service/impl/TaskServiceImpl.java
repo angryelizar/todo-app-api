@@ -8,10 +8,12 @@ import kg.angryelizar.todoapi.model.Task;
 import kg.angryelizar.todoapi.model.User;
 import kg.angryelizar.todoapi.repository.TaskRepository;
 import kg.angryelizar.todoapi.repository.TaskStatusRepository;
+import kg.angryelizar.todoapi.service.EmailService;
 import kg.angryelizar.todoapi.service.TaskService;
 import kg.angryelizar.todoapi.service.TaskStatusService;
 import kg.angryelizar.todoapi.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,8 +33,10 @@ public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
     private final UserService userService;
     private final TaskStatusRepository taskStatusRepository;
+    private final EmailService emailService;
 
     @Override
+    @SneakyThrows
     public ResponseEntity<TaskInfoDto> create(TaskCreateDto task, Authentication authentication) {
         User author = userService.getUserFromAuthentication(authentication);
         Task savedTask = taskRepository.save(
@@ -46,6 +50,7 @@ public class TaskServiceImpl implements TaskService {
                         .build());
         log.info("Created task with ID {} by user {}", savedTask.getId(), savedTask.getAuthor().getEmail());
         log.info("New task {}", savedTask);
+        emailService.sendEmail(author.getEmail(), savedTask.getTitle(), savedTask.getDescription(), savedTask.getStatus().getStatus(), savedTask.getCreationDate(), author.getUsername());
         return ResponseEntity.ok(makeTaskInfoDto(savedTask));
     }
 
